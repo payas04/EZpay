@@ -1,4 +1,5 @@
-💸 EZPay - A Simple and Secure Money Transfer App
+💸 EZPay 
+A Simple and Secure Money Transfer App
 EZPay is a minimalist and efficient web application for seamless peer-to-peer money transfers. Built with MERN, Tailwind CSS, and Axios, it offers a smooth user experience with a clean UI and intuitive navigation.
 
 ✨ Features
