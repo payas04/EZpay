@@ -25,7 +25,7 @@ function Users() {
   useEffect(() => {
     axios({
       method: "get",
-      url: "http://localhost:3000/api/v1/user/bulk",
+      url: "https://ezpay-4du6.onrender.com/api/v1/user/bulk",
       params: { filter },
     })
       .then((res) => {
@@ -91,7 +91,7 @@ function YourBalance() {
   useEffect(() => {
     axios({
       method: "get",
-      url: "http://localhost:3000/api/v1/account/balance",
+      url: "https://ezpay-4du6.onrender.com/api/v1/account/balance",
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -119,7 +119,7 @@ function AppBar() {
   useEffect(() => {
     axios({
       method: "get",
-      url: "http://localhost:3000/api/v1/user/me",
+      url: "https://ezpay-4du6.onrender.com/api/v1/user/me",
       headers: {
         Authorization: `Bearer ${token}`,
       },

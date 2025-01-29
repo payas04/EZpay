@@ -36,7 +36,7 @@ export function SendMoney() {
           onClick={() => {
             axios({
               method: "post",
-              url: "http://localhost:3000/api/v1/account/transfer",
+              url: "https://ezpay-4du6.onrender.com/api/v1/account/transfer",
               headers: {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${token}`,

@@ -60,7 +60,7 @@ export function Signup() {
           onClick={() =>
             axios({
               method: "post",
-              url: "http://localhost:3000/api/v1/user/signup",
+              url: "https://ezpay-4du6.onrender.com/api/v1/user/signup",
               headers: {
                 "Content-Type": "application/json", // Ensure Content-Type is set
               },
