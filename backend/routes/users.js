@@ -31,13 +31,7 @@ router.post("/signup", async function (req, res) {
       message: "User already exists",
     });
   }
-  bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
-    if (err) {
-      console.error(err);
-      return;
-    }
-    const hashedPassword = hash;
-  });
+  const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
   const newUser = new Users({
     firstName: req.body.firstname,
     lastName: req.body.lastname,
@@ -83,28 +77,17 @@ router.post("/signin", async (req, res) => {
   const user = await Users.findOne({
     username: username,
   });
-  if (user) {
-    bcrypt.compare(password, user.password, function (err, result) {
-      if (err) {
-        return res.status(400).json({
-          message: "Invalid Password",
-        });
-      }
-      if (result) {
-        const token = jwt.sign(
-          {
-            userId: user._id,
-          },
-          JWT_SECRET
-        );
-        return res.status(200).json({
-          token: token,
-        });
-      }
-    });
+  if (!user) {
+    return res.status(400).json({ message: "Invalid Username or Password" });
   }
-  return res.status(400).json({
-    message: "Invalid Password / Username",
+
+  bcrypt.compare(req.body.password, user.password, function (err, result) {
+    if (err || !result) {
+      return res.status(400).json({ message: "Invalid Username or Password" });
+    }
+
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET);
+    return res.status(200).json({ token });
   });
 });
 
