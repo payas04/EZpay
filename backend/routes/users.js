@@ -5,7 +5,8 @@ const jwt = require("jsonwebtoken");
 const { authMiddleware } = require("../middleware");
 const { Users, Account } = require("../db");
 const { JWT_SECRET } = require("../config");
-
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
 router.post("/signup", async function (req, res) {
   const signupSchema = z.object({
     firstname: z.string(),
@@ -30,11 +31,18 @@ router.post("/signup", async function (req, res) {
       message: "User already exists",
     });
   }
+  bcrypt.hash(req.body.password, saltRounds, function (err, hash) {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    const hashedPassword = hash;
+  });
   const newUser = new Users({
     firstName: req.body.firstname,
     lastName: req.body.lastname,
     username: req.body.username,
-    password: req.body.password, //Use bycrypt to store passwords instead of storing them directly in database
+    password: hashedPassword, //Use bycrypt to store passwords instead of storing them directly in database
   });
   const userId = newUser._id;
   await newUser.save();
@@ -71,19 +79,28 @@ router.post("/signin", async (req, res) => {
 
   const username = req.body.username;
   const password = req.body.password;
+
   const user = await Users.findOne({
     username: username,
-    password: password,
   });
   if (user) {
-    const token = jwt.sign(
-      {
-        userId: user._id,
-      },
-      JWT_SECRET
-    );
-    return res.status(200).json({
-      token: token,
+    bcrypt.compare(password, user.password, function (err, result) {
+      if (err) {
+        return res.status(400).json({
+          message: "Invalid Password",
+        });
+      }
+      if (result) {
+        const token = jwt.sign(
+          {
+            userId: user._id,
+          },
+          JWT_SECRET
+        );
+        return res.status(200).json({
+          token: token,
+        });
+      }
     });
   }
   return res.status(400).json({
